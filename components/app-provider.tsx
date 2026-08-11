@@ -1,0 +1,108 @@
+"use client"
+
+import * as React from "react"
+import type { HistoryItem, Settings } from "@/lib/types"
+import { DEFAULT_SETTINGS } from "@/lib/types"
+import {
+  clearAllAudio,
+  deleteAudio,
+  loadHistory,
+  loadSettings,
+  persistHistory,
+  putAudio,
+  saveSettings,
+} from "@/lib/storage"
+
+interface AppContextValue {
+  ready: boolean
+  settings: Settings
+  updateSettings: (patch: Partial<Settings>) => void
+  history: HistoryItem[]
+  addHistory: (item: HistoryItem, audio?: Blob) => Promise<void>
+  removeHistory: (id: string) => Promise<void>
+  clearHistory: () => Promise<void>
+}
+
+const AppContext = React.createContext<AppContextValue | null>(null)
+
+export function useApp() {
+  const ctx = React.useContext(AppContext)
+  if (!ctx) throw new Error("useApp must be used within AppProvider")
+  return ctx
+}
+
+function applyTheme(theme: Settings["theme"]) {
+  const root = document.documentElement
+  root.classList.remove("light", "dark")
+  if (theme === "light") root.classList.add("light")
+  else if (theme === "dark") root.classList.add("dark")
+  // "system" => no class, relies on media query
+}
+
+export function AppProvider({ children }: { children: React.ReactNode }) {
+  const [ready, setReady] = React.useState(false)
+  const [settings, setSettings] = React.useState<Settings>(DEFAULT_SETTINGS)
+  const [history, setHistory] = React.useState<HistoryItem[]>([])
+
+  React.useEffect(() => {
+    const s = loadSettings()
+    setSettings(s)
+    applyTheme(s.theme)
+    setHistory(loadHistory())
+    setReady(true)
+  }, [])
+
+  const updateSettings = React.useCallback((patch: Partial<Settings>) => {
+    setSettings((prev) => {
+      const next = { ...prev, ...patch }
+      saveSettings(next)
+      if (patch.theme && patch.theme !== prev.theme) applyTheme(patch.theme)
+      return next
+    })
+  }, [])
+
+  const addHistory = React.useCallback(
+    async (item: HistoryItem, audio?: Blob) => {
+      if (audio && item.hasAudio) {
+        try {
+          await putAudio(item.id, audio)
+        } catch {
+          item.hasAudio = false
+        }
+      }
+      setHistory((prev) => {
+        const next = [item, ...prev]
+        persistHistory(next)
+        return next
+      })
+    },
+    [],
+  )
+
+  const removeHistory = React.useCallback(async (id: string) => {
+    await deleteAudio(id).catch(() => {})
+    setHistory((prev) => {
+      const next = prev.filter((h) => h.id !== id)
+      persistHistory(next)
+      return next
+    })
+  }, [])
+
+  const clearHistory = React.useCallback(async () => {
+    await clearAllAudio().catch(() => {})
+    setHistory([])
+    persistHistory([])
+  }, [])
+
+  const value: AppContextValue = {
+    ready,
+    settings,
+    updateSettings,
+    history,
+    addHistory,
+    removeHistory,
+    clearHistory,
+  }
+
+  return <AppContext.Provider value={value}>{children}</AppContext.Provider>
+}
