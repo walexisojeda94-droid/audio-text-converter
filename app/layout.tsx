@@ -10,9 +10,9 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'Timbre — Voice & Audio Converter',
+  title: 'Timbre — Conversor de Voz y Audio',
   description:
-    'Convert text to natural speech and transcribe audio to text, right in your browser. Private by design.',
+    'Convierte texto en voz natural y transcribe audio a texto, directo en tu navegador. Privado por diseño.',
   generator: 'v0.app',
   icons: {
     icon: [
@@ -48,7 +48,7 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="en"
+      lang="es"
       className={`${geistSans.variable} ${geistMono.variable} bg-background`}
     >
       <body className="antialiased font-sans">

@@ -25,13 +25,15 @@ export function useVoices() {
 }
 
 export function languageLabel(code: string): string {
+  // Latin American Spanish umbrella code
+  if (code === "es-419") return "Español (Latinoamérica)"
   try {
-    const dn = new Intl.DisplayNames(undefined, { type: "language" })
+    const dn = new Intl.DisplayNames("es", { type: "language" })
     const base = code.split("-")[0]
     const region = code.split("-")[1]
     const lang = dn.of(base) ?? code
     if (region) {
-      const rn = new Intl.DisplayNames(undefined, { type: "region" })
+      const rn = new Intl.DisplayNames("es", { type: "region" })
       return `${lang} (${rn.of(region) ?? region})`
     }
     return lang

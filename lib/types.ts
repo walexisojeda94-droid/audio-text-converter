@@ -40,7 +40,7 @@ export interface Settings {
 export const DEFAULT_SETTINGS: Settings = {
   theme: "system",
   defaultVoiceURI: null,
-  defaultLang: "en-US",
+  defaultLang: "es-MX",
   rate: 1,
   pitch: 1,
   volume: 1,

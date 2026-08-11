@@ -10,7 +10,7 @@ import { countWords, makeTitle, uid } from "@/lib/format"
 import type { HistoryItem } from "@/lib/types"
 
 const SAMPLE =
-  "Hello — this is Timbre. Type anything here and I'll read it aloud in the voice you choose. Try adjusting the speed and pitch below."
+  "Hola — soy Timbre. Escribe lo que quieras aquí y lo leeré en voz alta con la voz que elijas. Prueba ajustando la velocidad y el tono más abajo."
 
 export function TextToAudio() {
   const { settings, updateSettings, addHistory } = useApp()
@@ -33,9 +33,11 @@ export function TextToAudio() {
   // Pick a sensible default voice once voices load.
   React.useEffect(() => {
     if (voiceURI || voices.length === 0) return
+    const base = settings.defaultLang.split("-")[0] // e.g. "es"
     const preferred =
       voices.find((v) => v.voiceURI === settings.defaultVoiceURI) ??
-      voices.find((v) => v.lang.startsWith(settings.defaultLang)) ??
+      voices.find((v) => v.lang.replace("_", "-") === settings.defaultLang) ??
+      voices.find((v) => v.lang.startsWith(base)) ??
       voices.find((v) => v.default) ??
       voices[0]
     if (preferred) setVoiceURI(preferred.voiceURI)
@@ -118,15 +120,15 @@ export function TextToAudio() {
   return (
     <div className="mx-auto max-w-3xl">
       <Header
-        eyebrow="Text to Audio"
-        title="Turn writing into a voice"
-        subtitle="Type or paste your text, choose a voice, and press play. Everything is synthesized locally on your device."
+        eyebrow="Texto a Audio"
+        title="Convierte tu texto en voz"
+        subtitle="Escribe o pega tu texto, elige una voz y presiona reproducir. Todo se sintetiza localmente en tu dispositivo."
       />
 
       {!supported && (
         <Notice>
-          Your browser doesn&apos;t support the Speech Synthesis API. Try the
-          latest Chrome, Edge, or Safari.
+          Tu navegador no admite la API de síntesis de voz. Prueba con la
+          versión más reciente de Chrome, Edge o Safari.
         </Notice>
       )}
 
@@ -135,7 +137,7 @@ export function TextToAudio() {
           <textarea
             value={text}
             onChange={(e) => setText(e.target.value)}
-            placeholder="Start typing here…"
+            placeholder="Empieza a escribir aquí…"
             rows={7}
             className="w-full resize-none rounded-xl bg-transparent p-4 text-[15px] leading-relaxed text-foreground outline-none placeholder:text-muted-foreground"
           />
@@ -144,10 +146,11 @@ export function TextToAudio() {
               onClick={() => setText(SAMPLE)}
               className="text-xs font-medium text-primary hover:underline"
             >
-              Insert sample text
+              Insertar texto de ejemplo
             </button>
             <span className="text-xs tabular-nums text-muted-foreground">
-              {words} {words === 1 ? "word" : "words"} · {text.length} chars
+              {words} {words === 1 ? "palabra" : "palabras"} · {text.length}{" "}
+              caracteres
             </span>
           </div>
         </div>
@@ -166,7 +169,7 @@ export function TextToAudio() {
               className="h-11 gap-2 px-5"
             >
               <Play className="h-4 w-4 fill-current" />
-              Play
+              Reproducir
             </Button>
           ) : (
             <>
@@ -174,7 +177,7 @@ export function TextToAudio() {
                 variant="secondary"
                 onClick={togglePause}
                 className="h-11 w-11 p-0"
-                aria-label={status === "playing" ? "Pause" : "Resume"}
+                aria-label={status === "playing" ? "Pausar" : "Reanudar"}
               >
                 {status === "playing" ? (
                   <Pause className="h-4 w-4" />
@@ -186,7 +189,7 @@ export function TextToAudio() {
                 variant="secondary"
                 onClick={stop}
                 className="h-11 w-11 p-0"
-                aria-label="Stop"
+                aria-label="Detener"
               >
                 <Square className="h-4 w-4" />
               </Button>
@@ -198,13 +201,13 @@ export function TextToAudio() {
       {/* Voice controls */}
       <div className="mt-4 grid gap-4 rounded-2xl border border-border bg-card p-5 sm:grid-cols-2">
         <div className="sm:col-span-2">
-          <Label>Voice</Label>
+          <Label>Voz</Label>
           <select
             value={voiceURI ?? ""}
             onChange={(e) => setVoiceURI(e.target.value)}
             className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm text-foreground outline-none focus:ring-2 focus:ring-ring"
           >
-            {voices.length === 0 && <option>Loading voices…</option>}
+            {voices.length === 0 && <option>Cargando voces…</option>}
             {voices.map((v) => (
               <option key={v.voiceURI} value={v.voiceURI}>
                 {v.name} — {languageLabel(v.lang)}
@@ -214,7 +217,7 @@ export function TextToAudio() {
         </div>
 
         <SliderField
-          label="Speed"
+          label="Velocidad"
           value={rate}
           min={0.5}
           max={2}
@@ -223,7 +226,7 @@ export function TextToAudio() {
           format={(v) => `${v.toFixed(1)}×`}
         />
         <SliderField
-          label="Pitch"
+          label="Tono"
           value={pitch}
           min={0}
           max={2}
@@ -232,7 +235,7 @@ export function TextToAudio() {
           format={(v) => v.toFixed(1)}
         />
         <SliderField
-          label="Volume"
+          label="Volumen"
           value={volume}
           min={0}
           max={1}
@@ -251,7 +254,7 @@ export function TextToAudio() {
             className="h-10 gap-2"
           >
             <RotateCcw className="h-4 w-4" />
-            Reset
+            Restablecer
           </Button>
           <Button
             variant={saved ? "secondary" : "default"}
@@ -260,7 +263,7 @@ export function TextToAudio() {
             className="h-10 flex-1 gap-2"
           >
             <Save className="h-4 w-4" />
-            {saved ? "Saved to history" : "Save to history"}
+            {saved ? "Guardado en historial" : "Guardar en historial"}
           </Button>
         </div>
       </div>

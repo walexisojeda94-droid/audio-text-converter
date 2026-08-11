@@ -19,10 +19,10 @@ type View = "text-to-audio" | "audio-to-text" | "history" | "settings"
 
 const NAV: { id: View; label: string; icon: React.ElementType; hint: string }[] =
   [
-    { id: "text-to-audio", label: "Text to Audio", icon: Type, hint: "Speak" },
-    { id: "audio-to-text", label: "Audio to Text", icon: Mic, hint: "Listen" },
-    { id: "history", label: "History", icon: Clock, hint: "Library" },
-    { id: "settings", label: "Settings", icon: SettingsIcon, hint: "Config" },
+    { id: "text-to-audio", label: "Texto a Audio", icon: Type, hint: "Hablar" },
+    { id: "audio-to-text", label: "Audio a Texto", icon: Mic, hint: "Escuchar" },
+    { id: "history", label: "Historial", icon: Clock, hint: "Biblioteca" },
+    { id: "settings", label: "Ajustes", icon: SettingsIcon, hint: "Config" },
   ]
 
 export function AppShell() {
@@ -39,7 +39,7 @@ export function AppShell() {
           </span>
           <div className="leading-tight">
             <p className="text-sm font-semibold tracking-tight">Timbre</p>
-            <p className="text-xs text-muted-foreground">Voice studio</p>
+            <p className="text-xs text-muted-foreground">Estudio de voz</p>
           </div>
         </div>
 
@@ -72,9 +72,11 @@ export function AppShell() {
         </nav>
 
         <div className="mt-auto rounded-xl border border-border bg-card p-3">
-          <p className="text-xs font-medium text-foreground">Private by design</p>
+          <p className="text-xs font-medium text-foreground">
+            Privado por diseño
+          </p>
           <p className="mt-1 text-[11px] leading-relaxed text-muted-foreground">
-            Conversions run in your browser. Nothing is uploaded.
+            Las conversiones ocurren en tu navegador. Nada se sube a internet.
           </p>
         </div>
       </aside>
@@ -90,7 +92,7 @@ export function AppShell() {
           </>
         ) : (
           <div className="flex h-64 items-center justify-center text-sm text-muted-foreground">
-            Loading…
+            Cargando…
           </div>
         )}
       </main>

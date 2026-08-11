@@ -6,19 +6,24 @@ import { Button } from "@/components/ui/button"
 import { Waveform } from "@/components/waveform"
 import { useApp } from "@/components/app-provider"
 import { Header, Label, Notice } from "./text-to-audio"
+import { languageLabel } from "@/lib/use-voices"
 import { countWords, makeTitle, uid } from "@/lib/format"
 import type { HistoryItem } from "@/lib/types"
 
 const LANGS = [
+  "es-MX",
+  "es-419",
+  "es-AR",
+  "es-CO",
+  "es-CL",
+  "es-US",
+  "es-ES",
   "en-US",
   "en-GB",
-  "es-ES",
+  "pt-BR",
   "fr-FR",
   "de-DE",
   "it-IT",
-  "pt-BR",
-  "nl-NL",
-  "hi-IN",
   "ja-JP",
   "ko-KR",
   "zh-CN",
@@ -183,16 +188,16 @@ export function AudioToText() {
   return (
     <div className="mx-auto max-w-3xl">
       <Header
-        eyebrow="Audio to Text"
-        title="Speak and see it written"
-        subtitle="Record from your microphone and Timbre transcribes it live. Captured audio and the transcript can be saved to your history."
+        eyebrow="Audio a Texto"
+        title="Habla y velo escrito"
+        subtitle="Graba desde tu micrófono y Timbre lo transcribe en vivo. El audio capturado y la transcripción se pueden guardar en tu historial."
       />
 
       {!supported && (
         <Notice>
-          Live transcription needs the Web Speech Recognition API, available in
-          Chrome and Edge. In other browsers you can still record, but automatic
-          transcription won&apos;t be available.
+          La transcripción en vivo necesita la API de reconocimiento de voz web,
+          disponible en Chrome y Edge. En otros navegadores aún puedes grabar,
+          pero la transcripción automática no estará disponible.
         </Notice>
       )}
 
@@ -211,7 +216,7 @@ export function AudioToText() {
                 ? "bg-destructive text-white shadow-lg shadow-destructive/30"
                 : "bg-primary text-primary-foreground shadow-lg shadow-primary/25")
             }
-            aria-label={recording ? "Stop recording" : "Start recording"}
+            aria-label={recording ? "Detener grabación" : "Iniciar grabación"}
           >
             {recording ? (
               <Square className="h-7 w-7" />
@@ -222,7 +227,7 @@ export function AudioToText() {
 
           <div className="text-center">
             <p className="text-sm font-medium text-foreground">
-              {recording ? "Listening…" : "Tap to start recording"}
+              {recording ? "Escuchando…" : "Toca para empezar a grabar"}
             </p>
             <p className="mt-0.5 text-xs tabular-nums text-muted-foreground">
               {mm}:{ss.toString().padStart(2, "0")}

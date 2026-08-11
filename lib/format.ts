@@ -9,14 +9,14 @@ export function formatDuration(seconds?: number): string {
 export function formatRelativeTime(ts: number): string {
   const diff = Date.now() - ts
   const sec = Math.floor(diff / 1000)
-  if (sec < 60) return "just now"
+  if (sec < 60) return "hace un momento"
   const min = Math.floor(sec / 60)
-  if (min < 60) return `${min} min ago`
+  if (min < 60) return `hace ${min} min`
   const hr = Math.floor(min / 60)
-  if (hr < 24) return `${hr} hr ago`
+  if (hr < 24) return `hace ${hr} h`
   const day = Math.floor(hr / 24)
-  if (day < 7) return `${day} day${day > 1 ? "s" : ""} ago`
-  return new Date(ts).toLocaleDateString(undefined, {
+  if (day < 7) return `hace ${day} día${day > 1 ? "s" : ""}`
+  return new Date(ts).toLocaleDateString("es", {
     month: "short",
     day: "numeric",
     year: "numeric",
@@ -31,7 +31,7 @@ export function countWords(text: string): number {
 
 export function makeTitle(text: string, max = 60): string {
   const t = text.trim().replace(/\s+/g, " ")
-  if (!t) return "Untitled"
+  if (!t) return "Sin título"
   return t.length > max ? t.slice(0, max).trimEnd() + "…" : t
 }
 
